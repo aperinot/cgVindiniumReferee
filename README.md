@@ -1,1 +1,1 @@
-This is a port of the [vindinium](https://github.com/ornicar/vindinium) game to [CodinGame](https://codingame.com).
+This is a [Brutaltester](https://github.com/dreignier/cg-brutaltester) ready Referee for [CodinGame](https://codingame.com) based on [Vindinium Referee](https://github.com/eulerschezahl/vindinium)
