@@ -39,11 +39,11 @@ public class Referee extends AbstractReferee {
         gameManager.setFrameDuration(250);
 
         Properties params = gameManager.getGameParameters();
-        System.err.println("seed: " + getSeed(params));
+        //System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
 
         board = Config.generateMap(gameManager.getPlayers());
-        System.err.print(board.print());
+        //System.err.print(board.print());
 
         board.initMines();
         initGridView();
