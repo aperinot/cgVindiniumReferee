@@ -16,6 +16,8 @@ import com.codingame.gameengine.runner.dto.GameResult;
 import com.google.common.io.Files;
 
 public class CommandLineInterface {
+	
+	static final int MAX_PLAYERS = 4;
 
 	public static void main(String[] args) {
 		try {
@@ -28,8 +30,15 @@ public class CommandLineInterface {
 					.addOption("d", true, "Referee initial data");
 
 			CommandLine cmd = new DefaultParser().parse(options, args);
+			
+			int playerCount = 0;
+			
+			for (int p = 1; p <= MAX_PLAYERS; ++p) {
+				if (!cmd.hasOption("p" + p)) break;
+				++playerCount;
+			}
 
-			if (cmd.hasOption("h") || !cmd.hasOption("p1") || !cmd.hasOption("p2")  || !cmd.hasOption("p3")  || !cmd.hasOption("p4")) {
+			if (cmd.hasOption("h") || (playerCount != 2 && playerCount != 4)) {
 				new HelpFormatter().printHelp(
 						"-p1 <player1 command line> -p2 <player2 command line> -p3 <player3 command line> -p4 <player4 command line> [-s -l <File output for logs>]",
 						options);
@@ -53,15 +62,10 @@ public class CommandLineInterface {
 				// result.refereeInput = cmd.getOptionValue("d");
 			}
 
-			int playerCount = 0;
-
-			for (int i = 1; i <= 4; ++i) {
-				if (cmd.hasOption("p" + i)) {
-					runner.addAgent(cmd.getOptionValue("p" + i));
-					playerCount += 1;
-				}
+			for (int i = 1; i <= playerCount; ++i) {
+				runner.addAgent(cmd.getOptionValue("p" + i));	
 			}
-
+			
 			if (cmd.hasOption("s")) {
 				runner.start();
 			} else {

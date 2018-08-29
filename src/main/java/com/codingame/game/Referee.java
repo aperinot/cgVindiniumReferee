@@ -1,5 +1,4 @@
 package com.codingame.game;
-import com.codingame.gameengine.core.AbstractPlayer;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.core.Tooltip;
@@ -28,7 +27,7 @@ public class Referee extends AbstractReferee {
     @Inject
     private TooltipModule tooltipModule;
 
-    private HeroHud[] HeroHuds = new HeroHud[4];
+    private List<HeroHud> HeroHuds = new ArrayList<>();;
     private Board board;
     private ViewController view;
 
@@ -41,6 +40,7 @@ public class Referee extends AbstractReferee {
         Properties params = gameManager.getGameParameters();
         //System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
+        Config.random2p = new Random(getSeed(params));
 
         board = Config.generateMap(gameManager.getPlayers());
         //System.err.print(board.print());
@@ -54,16 +54,14 @@ public class Referee extends AbstractReferee {
         view.createGrid(board);
 
         int c = 0;
-        int remainingSpace =(graphicEntityModule.getWorld().getWidth()-graphicEntityModule.getWorld().getHeight());
-        int rightXPos = remainingSpace/2+graphicEntityModule.getWorld().getHeight();
+
         for (Player p : gameManager.getPlayers()) {
             view.setSpawn(p.hero.spawnPos, p.getIndex());
             int w = graphicEntityModule.getWorld().getWidth();
             int h = graphicEntityModule.getWorld().getHeight();
             int width = (w-ViewConstants.BarRight);
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width);
-            c++;
+            HeroHuds.add(new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width));
         }
     }
 
@@ -85,7 +83,7 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-        Player player = gameManager.getPlayer(turn % 4);
+        Player player = gameManager.getPlayer(turn % gameManager.getPlayers().size());
         //System.err.println("TURN: " + turn);
 
         String action = "WAIT";
@@ -143,7 +141,7 @@ public class Referee extends AbstractReferee {
         List<Tile> fightLocations = hero.fight(board, gameManager);
         hero.finalize(board);
         player.setScore(hero.gold);
-        HeroHuds[player.getIndex()].OnRound(message);
+        HeroHuds.get(player.getIndex()).OnRound(message);
 
         Hero leader = board.getLeader();
         for (HeroHud heroHud : HeroHuds) {

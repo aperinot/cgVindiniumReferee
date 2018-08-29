@@ -17,7 +17,7 @@ public class GoldCounterView implements IView{
     public GoldCounterView(List<Hero> heroes, GraphicEntityModule entityModule){
         _heroes = heroes;
         _fullHeight = entityModule.getWorld().getHeight()-150;
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < heroes.size(); i++){
             _rectangles.add(createRectangle(entityModule, i).setFillColor(_heroes.get(i).player.getColorToken()).setZIndex(8-i));
         }
 
@@ -32,7 +32,7 @@ public class GoldCounterView implements IView{
     @Override
     public void onRound() {
         int sumGold = findGold(4);
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < _heroes.size(); i++){
             if(sumGold==0) _rectangles.get(i).setHeight(_fullHeight/4*i+_fullHeight/4);
             else {
                 float currentSum = findGold(i+1);
@@ -43,7 +43,7 @@ public class GoldCounterView implements IView{
     }
 
     private int findGold(int num){
-        if(num > 4) num = 4;
+        if(num > _heroes.size()) num = _heroes.size();
         int sum = 0;
         for(int i = 0; i < num; i++){
             sum += _heroes.get(i).gold;

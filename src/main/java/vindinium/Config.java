@@ -5,6 +5,7 @@ import com.codingame.game.Player;
 import java.util.*;
 
 public class Config {
+	public static Random random2p;
     public static Random random;
     private static int size;
     private static int wallPercent;
@@ -24,14 +25,41 @@ public class Config {
             if (!placeTaverns(board, spawnPos)) continue;
             while (board.shrink()) size = board.size;
 
-            players.get(0).hero = new Hero(players.get(0), spawnPos);
-            players.get(1).hero = new Hero(players.get(1), board.tiles[spawnPos.x][size - spawnPos.y - 1]);
-            players.get(2).hero = new Hero(players.get(2), board.tiles[size - spawnPos.x - 1][spawnPos.y]);
-            players.get(3).hero = new Hero(players.get(3), board.tiles[size - spawnPos.x - 1][size - spawnPos.y - 1]);
-            board.heroes.add(players.get(0).hero);
-            board.heroes.add(players.get(1).hero);
-            board.heroes.add(players.get(2).hero);
-            board.heroes.add(players.get(3).hero);
+            
+            if (players.size() == 2) {
+            	players.get(0).hero = new Hero(players.get(0), spawnPos);
+
+            	int startX = 0, startY = 0;
+            	int halfSize = size / 2;
+            	
+            	if (random2p.nextInt(2) == 0) {
+            		players.get(1).hero = new Hero(players.get(1), board.tiles[spawnPos.x][size - spawnPos.y - 1]);
+            		startX = halfSize;
+            	} else {
+    	            players.get(1).hero = new Hero(players.get(1), board.tiles[size - spawnPos.x - 1][spawnPos.y]);
+    	            startY = halfSize;
+            	}
+            	
+        		for (int y = startY; y < size; ++y) {
+        			for (int x = startX; x < size; ++x) {
+        				board.tiles[x][y].type = Tile.Type.Wall;
+        			}
+        		}
+                
+                board.heroes.add(players.get(0).hero);
+                board.heroes.add(players.get(1).hero);
+                
+            } else {
+            	players.get(0).hero = new Hero(players.get(0), spawnPos);
+                players.get(1).hero = new Hero(players.get(1), board.tiles[spawnPos.x][size - spawnPos.y - 1]);
+	            players.get(2).hero = new Hero(players.get(2), board.tiles[size - spawnPos.x - 1][spawnPos.y]);
+	            players.get(3).hero = new Hero(players.get(3), board.tiles[size - spawnPos.x - 1][size - spawnPos.y - 1]);
+	            		
+                board.heroes.add(players.get(0).hero);
+                board.heroes.add(players.get(1).hero);
+	            board.heroes.add(players.get(2).hero);
+	            board.heroes.add(players.get(3).hero);
+            }
             return board;
         }
     }
